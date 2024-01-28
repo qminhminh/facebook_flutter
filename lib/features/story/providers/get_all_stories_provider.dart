@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,17 +17,16 @@ final getAllStoriesProvider =
 
   userData.whenData((user) {
     final myFriends = [
-      user.uid,
       ...user.friends,
+      user.uid,
     ];
 
     final yesterday = DateTime.now().subtract(const Duration(days: 1));
-
+    print("Query Parameters: ${yesterday.millisecondsSinceEpoch}, $myFriends");
     final sub = FirebaseFirestore.instance
         .collection(FirebaseCollectionNames.stories)
-        .orderBy(FirebaseFieldNames.createdAt, descending: true)
-        .where(FirebaseFieldNames.createdAt,
-            isGreaterThan: yesterday.millisecondsSinceEpoch)
+        .orderBy("created_at", descending: true)
+        .where("created_at", isGreaterThan: yesterday.millisecondsSinceEpoch)
         .where(FirebaseFieldNames.authorId, whereIn: myFriends)
         .snapshots()
         .listen((snapshot) {

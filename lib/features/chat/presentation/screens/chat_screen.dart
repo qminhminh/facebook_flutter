@@ -56,14 +56,15 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         return Scaffold(
           backgroundColor: AppColors.realWhiteColor,
           appBar: AppBar(
+            automaticallyImplyLeading: false,
             leading: IconButton(
-              onPressed: Navigator.of(context).pop,
-              icon: const Icon(
-                Icons.arrow_back_ios,
-                color: AppColors.messengerBlue,
-                size: 10,
-              ),
-            ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(
+                  Icons.arrow_back,
+                  color: Colors.black,
+                )),
             titleSpacing: 0,
             title: ChatUserInfo(
               userId: widget.userId,
