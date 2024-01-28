@@ -13,7 +13,7 @@ final getAllCommentsProvider = StreamProvider.autoDispose
   final sub = FirebaseFirestore.instance
       .collection(FirebaseCollectionNames.comments)
       .where(FirebaseFieldNames.postId, isEqualTo: postId)
-      //.orderBy(FirebaseFieldNames.createdAt, descending: true)
+      //.orderBy("created_at", descending: true)
       .snapshots()
       .listen((snapshot) {
     final comments = snapshot.docs.map(

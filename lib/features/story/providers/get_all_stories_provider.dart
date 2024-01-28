@@ -21,12 +21,15 @@ final getAllStoriesProvider =
       user.uid,
     ];
 
-    final yesterday = DateTime.now().subtract(const Duration(days: 1));
+    final now = DateTime.now().toUtc();
+    final yesterday = now.subtract(const Duration(days: 1));
+
     print("Query Parameters: ${yesterday.millisecondsSinceEpoch}, $myFriends");
+
     final sub = FirebaseFirestore.instance
         .collection(FirebaseCollectionNames.stories)
-        .orderBy("created_at", descending: true)
-        .where("created_at", isGreaterThan: yesterday.millisecondsSinceEpoch)
+        //.orderBy("created_at", descending: true)
+        //  .where("created_at", isGreaterThan: yesterday.millisecondsSinceEpoch)
         .where(FirebaseFieldNames.authorId, whereIn: myFriends)
         .snapshots()
         .listen((snapshot) {

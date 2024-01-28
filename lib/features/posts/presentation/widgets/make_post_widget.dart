@@ -1,21 +1,55 @@
+// ignore_for_file: avoid_print
 import 'package:facebook_flu/features/posts/presentation/widgets/round_profile_tile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../../core/screens/loader.dart';
 import '../screens/create_post_screen.dart';
 import '/core/constants/app_colors.dart';
 import '/core/constants/constants.dart';
 
-class FeedMakePostWidget extends StatelessWidget {
+class FeedMakePostWidget extends StatefulWidget {
   const FeedMakePostWidget({
     super.key,
   });
+
+  @override
+  State<FeedMakePostWidget> createState() => _FeedMakePostWidgetState();
+}
+
+class _FeedMakePostWidgetState extends State<FeedMakePostWidget> {
+  String image = '';
+  @override
+  void initState() {
+    super.initState();
+    StreamBuilder(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Loader();
+        }
+
+        if (snapshot.hasData) {
+          final user = snapshot.data;
+          if (user!.emailVerified) {
+            setState(() {
+              image = user.photoURL!;
+            });
+          } else {}
+        }
+
+        return const Text('');
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: GestureDetector(
         onTap: () {
+          print("Image: ${Constants.maleProfilePic}");
           Navigator.of(context).pushNamed(CreatePostScreen.routeName);
         },
         child: Container(
@@ -27,8 +61,8 @@ class FeedMakePostWidget extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const RoundProfileTile(
-                  url: Constants.maleProfilePic,
+                RoundProfileTile(
+                  url: image != '' ? image : Constants.maleProfilePic,
                 ),
                 _buildPostTextField(),
                 const Padding(
